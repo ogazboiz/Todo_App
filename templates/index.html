@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
   <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}">
   <style>
+    body {
+    background-color: blueviolet;
+    }
     .hidden{
       display: none;
     }
@@ -25,8 +28,7 @@
       <div class="field">
         <label for="title">Todo Title</label>
         <input type="text" id="title" placeholder="Enter Todo...">
-        <br>
-        <button class="ui blue button button_form" type="submit">Add</button>
+        <input class="ui blue button" style="margin-top: 10px;" type="submit" value="Create" />
       </div>
     </form>
     <div id="error" class="hidden">Something went wrong!</div>
@@ -47,6 +49,7 @@
       {% endfor %}
     </ul>
   </div>
+  
   <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
   <script>
     document.getElementById('form').onsubmit = function(e) {
@@ -72,8 +75,8 @@
         document.getElementById('error').className='hidden';
       })
     .catch(function() {
-          document.getElementById('error').classname = '';
-          })
+      document.getElementById('error').className ='';
+    })
       
     }
   </script>
