@@ -16,7 +16,7 @@ All you need to do is start entering your task in the search bar, and the task w
 
 # :mega: Want to contribute?
 
-We would love to have you! ogazboiz todo app is open source and we are keen on hearing what you have to say. Do check out the [code of conduct](#) for rules and guidelines, and our [CONTRIBUTING.md file](#) for any steps you might need.
+We would love to have you! ogazboiz todo app is open source and we are keen on hearing what you have to say. Do check out the [code of conduct](CODE_OF_CONDUCT.md) for rules and guidelines, and our [CONTRIBUTING.md file](#) for any steps you might need.
 
 ## :bulb: Getting Started
 
@@ -27,6 +27,7 @@ Found a bug? Accessibility issue? Then go right ahead and create an issue.
 This project uses:
 
 - [Postgres](https://www.postgresql.org/)
+- [semantic UI](https://semantic-ui.com/)
 - [semantic UI](https://semantic-ui.com/)
 
 ### Prerequisites
