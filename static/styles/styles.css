@@ -1,1 +1,14 @@
-
+body {
+    background-color: blueviolet;
+}
+ul {
+    list-style: none;
+    padding:0;
+    margin: 0;
+ }
+li {
+    clear: both;
+}
+.hidden{
+    display: none;
+}

@@ -11,12 +11,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
   <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}">
   <style>
-    body {
-    background-color: blueviolet;
-    }
-    .hidden{
-      display: none;
-    }
+  
   </style>
 </head>
 
@@ -35,16 +30,19 @@
     <ul id="todos">
       {% for todo in todo_list %}
       <div class="ui segment">
-        <li class="ui big header">{{ todo.title }}</li>
+        <li class="ui big header"> 
+          <input class = "check-completed" data-id="{{todo.id}}"  type="checkbox" {% if todo.completed %} checked   {% endif %} /> 
+          {{ todo.title }}
+        </li>
 
-        {% if todo.complete == False %}
-        <span class="ui orange label">Not complete</span>
+        {% if todo.completed %}
+        <span class="ui green label">Completed </span>
         {% else %}
-        <span class="ui green label">Completed</span>
+        <span class="ui orange label">Not complete</span>
         {% endif %}
 
-        <a class="ui blue button" href="/update/{{ todo.id }}">Update</a>
-        <a class="ui red button" href="/delete/{{ todo.id }}"> <i class="trash icon"></i> Delete</a>
+        <!-- <a class="ui blue button" href="/update/{{ todo.id }}">Update</a> -->
+        <a class="delete-button ui red button" data-id="{{ todo.id }}"> <i class="trash icon"></i> Delete</a>
       </div>
       {% endfor %}
     </ul>
@@ -52,6 +50,42 @@
   
   <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
   <script>
+    const checkboxes = document.querySelectorAll('.check-completed');
+    for (let i = 0 ; i < checkboxes.length ; i++) {
+      const checkbox = checkboxes[i];
+      checkbox.onchange = function(e) {
+        console.log('event', e);
+        const newCompleted = e.target.checked;
+        const todoId = e.target.dataset['id'];
+        fetch('/todos/' + todoId + '/set-completed', {
+          method: 'POST',
+          body: JSON.stringify({
+            'completed': newCompleted
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(function(response) {
+          document.getElementById('error').className='hidden';
+        })
+        .catch(function() {
+          document.getElementById('error').className ='';
+        })
+      }
+    }
+
+  const deleteBtns = document.querySelectorAll('.delete-button');
+  for (let i = 0; i < deleteBtns.length; i++) {
+    const btn = deleteBtns[i];
+    btn.onclick = function(e) {
+      const todoId = e.target.dataset['id'];
+      fetch('/todos/' + todoId, {
+        method: 'DELETE'
+      });
+    }
+  }
+
     document.getElementById('form').onsubmit = function(e) {
     e.preventDefault();
 
