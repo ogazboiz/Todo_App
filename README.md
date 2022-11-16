@@ -12,7 +12,7 @@ You can check out the live project [here](#)
 
 All you need to do is start entering your task in the search bar, and the task would be added to your list. 
 
-![picture of form section of page with 'various types into the search bar, it's meaning below it, and alternative meanings](#)
+![picture of form section of page with 'various types into the search bar, it's meaning below it, and alternative meanings](todo_searchbar.png)
 
 # :mega: Want to contribute?
 
