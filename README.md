@@ -28,26 +28,50 @@ This project uses:
 
 - [Postgres](https://www.postgresql.org/)
 - [semantic UI](https://semantic-ui.com/)
-- [semantic UI](https://semantic-ui.com/)
-
+- [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/)
+- [flask](https://flask.palletsprojects.com/en/2.2.x/installation/)
 ### Prerequisites
 
 Before installation, you need to have the following:
 
 - [flask](https://flask.palletsprojects.com/en/2.2.x/installation/) installed
 - Basic knowledge of [Git](https://git-scm.com/)
-
+- [python](https://www.python.org/)
 ### Steps
 
 1. [Fork](https://github.com/ogazboiz/Todo_App/fork) this repository.
 2. In your terminal, clone your fork using `git clone <link to your fork>`.
 3. Run `cd Todo_App` to navigate to project directory.
-4. To start the server on localhost, run `flask run`.
+4. ### Setup
+Create project with virtual environment
 
+```console
+$ cd myproject
+$ python3 -m venv venv
+```
 
+Activate it
+```console
+$ . venv/bin/activate
+```
+
+or on Windows
+```console
+venv\Scripts\activate
+```
+
+Install Flask
+```console
+$ pip install Flask
+$ pip install Flask-SQLAlchemy
+```
+
+Set environment variables in terminal
+```console
+$ export FLASK_APP=app.py
+$ export FLASK_ENV=development
+```
 6. Make your changes, push your code, and open a pull request.
-
-
 # :key: License
 
 
