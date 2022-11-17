@@ -11,28 +11,74 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
   <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}">
   <style>
-  
+    .lists-wrapper, .todos-wrapper {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    a.Todo-list_link {
+      color: black;
+    }
+
+    a.Todo-list_link:hover {
+      color: blue;
+    }
+
   </style>
 </head>
 
 <body class="body_color">
-  <div style="margin-top: 50px;" class="ui container">
+  
     <h1 class="ui center aligned header">Todo App</h1>
+    <div style="margin-top: 50px;" class="ui container">  
+    <div class="lists-wrapper">
+      <h4>TODO LISTS</h4>
+      <form action="/lists/create" method="POST" class="ui form" id="list-form">
+        <!-- <label for="todolist">Create List:</label> -->
+        <input type="text" name="todolist" id="todolist-input" placeholder="A new List" data-id="{{ active_list.id }}"/>
+        <button type="submit" class="ui blue button" style="margin-top: 10px; margin-bottom: 10px;" >Add List</button>
+      </form>   
+      <ul id="list">
+        {% for list in lists %}
+          <div class="ui segment">
+            <li class="ui large header"> 
+                <input class =  "ui checkbox list-check-completed" data-id="{{list.id}}"  type="checkbox" {% if list.completed %} checked   {% endif %}/> 
+                <a href="/lists/{{ list.id }}" class="Todo-list_link">{{ list.name }}</a>
+            </li>
+    
+            {% if list.completed %}
+            <span class="ui green label">Completed </span>
+            {% else %}
+            <span class="ui orange label">Not complete</span>
+            {% endif %}
+    
+            
 
-    <form class="ui form" id="form">
-      <div class="field">
-        <label for="title">Todo Title</label>
-        <input type="text" id="title" placeholder="Enter Todo...">
-        <input class="ui blue button" style="margin-top: 10px;" type="submit" value="Create" />
-      </div>
-    </form>
+            <button class="delete-list ui red button" data-id="{{ list.id }}"><i class="trash icon"></i> Delete</button>
+          </div>
+        
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="todos-wrapper" >
+      <h4>TODO ITEMS</h4>
+      <form class="ui form" method="POST" id="form">
+        <div class="field">
+          <input id="list_id" type="hidden" value="{{ active_list.id }}">
+          <input type="text" id="title" placeholder="Enter Todo...">
+          <input class="ui blue button" style="margin-top: 10px; margin-bottom: 10px;" type="submit" value="Create" />
+        </div>
+      </form>
+    
+    
     <div id="error" class="hidden">Something went wrong!</div>
+    <h4 class="ui large header">{{ active_list.name }}</h4>
     <ul id="todos">
       {% for todo in todo_list %}
       <div class="ui segment">
-        <li class="ui big header"> 
-          <input class = "check-completed" data-id="{{todo.id}}"  type="checkbox" {% if todo.completed %} checked   {% endif %} /> 
-          {{ todo.title }}
+        <li class="ui medium header"> 
+            <input class =  "ui checkbox check-completed" data-id="{{todo.id}}"  type="checkbox" {% if todo.completed %} checked   {% endif %} /> 
+            {{ todo.title }}
         </li>
 
         {% if todo.completed %}
@@ -47,9 +93,48 @@
       {% endfor %}
     </ul>
   </div>
+  </div>
   
   <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
   <script>
+    const listCheckboxes = document.querySelectorAll('.list-check-completed');
+      for (let i = 0; i < listCheckboxes.length; i++) {
+          const checkbox = listCheckboxes[i];
+
+          checkbox.onchange = function (e) {
+              if (e.target.checked) {
+                  const listId = e.target.dataset.id;
+                  const newCompleted = e.target.checked;
+                  fetch('/lists/' + listId + '/set-completed', {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        'completed': newCompleted
+                      }),
+                      headers: {
+                          'Content-Type': 'application/json'
+                      }
+                  })
+                  .then(function (jsonResponse) {
+                      document.getElementById('error').className ='hidden';
+
+                      const todoCheckboxes = document.querySelectorAll('.todo-check-completed');
+
+                      for (let i = 0; i < todoCheckboxes.length; i++) {
+                          const checkbox = todoCheckboxes[i];
+
+                          checkbox.checked = true;
+                      }
+                  })
+                  .catch(function () {
+                      document.getElementById('error').className = '';
+                  })
+              }
+          }
+      }
+
+
+
+
     const checkboxes = document.querySelectorAll('.check-completed');
     for (let i = 0 ; i < checkboxes.length ; i++) {
       const checkbox = checkboxes[i];
@@ -92,7 +177,8 @@
     fetch('/todos/create', {
         method: 'POST',
         body: JSON.stringify({
-          'title': document.getElementById('title').value
+          'title': document.getElementById('title').value,
+          'list_id': document.getElementById('list_id').value
         }),
         headers: {
           'Content-type': 'application/json',
@@ -113,6 +199,57 @@
     })
       
     }
+    document.getElementById('list-form').onsubmit = function (e) {
+        e.preventDefault();
+
+        fetch('/lists/create', {
+            method: 'POST',
+            body: JSON.stringify({
+                'name': document.getElementById('todolist-input').value
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (jsonResponse) {
+            const liItem = document.createElement('LI');
+
+            liItem.innerHTML = jsonResponse['name'];
+            document.getElementById('lists').appendChild(liItem);
+            document.getElementById('error').className = 'hidden';
+            window.location.reload(true);
+        })
+        .catch(function() {
+      document.getElementById('error').className ='';
+    })
+      }
+      deleteListBtns = document.querySelectorAll(".delete-list");
+
+      for (let i = 0; i < deleteListBtns.length; i++) {
+        const deleteBtn = deleteListBtns[i];
+        deleteBtn.onclick = function(e) {
+          console.log("Delete event: ", e);
+          const listId = e.target.dataset.id;
+
+          fetch('/lists/'+ listId + '/delete',{
+            method: 'DELETE'
+          }).then(function() {
+            console.log('Parent?', e.target);
+            const item = e.target.parentElement;
+            item.remove();
+              document.getElementById("error").className = "hidden";
+              window.location.reload(true);
+            })
+            .catch(function(e) {
+              console.error(e);
+              document.getElementById("error").className = "";
+            });
+        };
+      }
+
   </script>
 </body>
 
